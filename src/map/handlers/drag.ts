@@ -24,8 +24,8 @@ export default class Drag {
         this.map = map;
 
         this.dragBehavior = d3.drag()
-            .on("start", (node: Node) => this.started(node))
-            .on("drag", (node: Node) => this.dragged(node))
+            .on("start", (event, node: Node) => this.started(node, event))
+            .on("drag", (event, node: Node) => this.dragged(node, event))
             .on("end", (node: Node) => this.ended(node));
     }
 
@@ -41,8 +41,8 @@ export default class Drag {
      * Select the node and calculate node position data for dragging.
      * @param {Node} node
      */
-    private started(node: Node) {
-        d3.event.sourceEvent.preventDefault();
+    private started(node: Node, event) {
+        event.sourceEvent.preventDefault();
 
         this.orientation = this.map.nodes.getOrientation(node);
         this.descendants = this.map.nodes.getDescendants(node);
@@ -54,9 +54,9 @@ export default class Drag {
      * Move the dragged node and if it is locked all their descendants.
      * @param {Node} node
      */
-    private dragged(node: Node) {
-        let dy = d3.event.dy,
-            dx = d3.event.dx;
+    private dragged(node: Node, event) {
+        let dy = event.dy,
+            dx = event.dx;
 
         // Set new coordinates
         let x = node.coordinates.x += dx,

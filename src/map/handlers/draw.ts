@@ -66,7 +66,7 @@ export default class Draw {
             })
             .attr("transform", (node: Node) => "translate(" + node.coordinates.x + "," + node.coordinates.y + ")")
             .on("dblclick", (node: Node) => {
-                d3.event.stopPropagation();
+                // d3.event.stopPropagation();
                 this.enableNodeNameEditing(node);
             }).on('touchstart', (node: Node) => {
                 if (!tapedTwice) {
