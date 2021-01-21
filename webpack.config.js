@@ -1,7 +1,20 @@
 const path = require('path');
 
 module.exports = {
+  devServer: {
+    port: 8333,
+    publicPath: '/dist/',
+    // https://github.com/webpack/webpack-dev-server/issues/2484
+    injectClient: false,
+  },
   entry: './src/index.ts',
+  output: {
+    library: 'mmp',
+    libraryTarget: 'umd',
+    filename: 'bundle.js',
+    globalObject: 'this',
+    path: path.resolve(__dirname, 'dist'),
+  },
   module: {
     rules: [
       {
@@ -13,9 +26,5 @@ module.exports = {
   },
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
-  },
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
   },
 };
