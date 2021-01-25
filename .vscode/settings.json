@@ -1,5 +1,9 @@
 {
     "vim.insertModeKeyBindingsNonRecursive": [
         {"before": ["j", "k"], "after": ["<esc>"]},
-    ]
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": ["javascript"]
 }

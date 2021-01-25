@@ -1,0 +1,3 @@
+[alias]
+    display = status --ignore-submodules=none
+    tree = log --graph --oneline --decorate
