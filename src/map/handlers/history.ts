@@ -1,8 +1,8 @@
-import Map from "../map";
-import Node, {Colors, Coordinates, ExportNodeProperties, Font, Image, NodeProperties} from "../models/node";
-import {Event} from "./events";
-import Log from "../../utils/log";
-import Utils from "../../utils/utils";
+import Map from '../map'
+import Node, {Colors, Coordinates, ExportNodeProperties, Font, Image, NodeProperties} from '../models/node'
+import {Event} from './events'
+import Log from '../../utils/log'
+import Utils from '../../utils/utils'
 
 /**
  * Manage map history, for each change save a snapshot.
@@ -12,17 +12,17 @@ export default class History {
     private map: Map;
 
     private index: number;
-    private snapshots: MapSnapshot[];
+    private snapshots: MapSnapshot[]
 
     /**
      * Get the associated map instance, initialize index and snapshots.
      * @param {Map} map
      */
     constructor(map: Map) {
-        this.map = map;
+        this.map = map
 
-        this.index = -1;
-        this.snapshots = [];
+        this.index = -1
+        this.snapshots = []
     }
 
     /**
@@ -30,7 +30,7 @@ export default class History {
      * @return {MapSnapshot} [snapshot] - Last snapshot of the map.
      */
     public current = (): MapSnapshot => {
-        return this.snapshots[this.index];
+        return this.snapshots[this.index]
     };
 
     /**
@@ -39,32 +39,32 @@ export default class History {
      */
     public new = (snapshot?: MapSnapshot) => {
         if (snapshot === undefined) {
-            let oldRootCoordinates = Utils.cloneObject(this.map.nodes.getRoot().coordinates);
+            const oldRootCoordinates = Utils.cloneObject(this.map.nodes.getRoot().coordinates)
 
-            this.map.nodes.setCounter(0);
+            this.map.nodes.setCounter(0)
 
-            this.map.nodes.clear();
+            this.map.nodes.clear()
 
-            this.map.draw.clear();
-            this.map.draw.update();
+            this.map.draw.clear()
+            this.map.draw.update()
 
-            this.map.nodes.addRootNode(oldRootCoordinates);
+            this.map.nodes.addRootNode(oldRootCoordinates)
 
-            this.map.zoom.center(null, 0);
+            this.map.zoom.center(null, 0)
 
-            this.save();
+            this.save()
 
-            this.map.events.call(Event.create);
+            this.map.events.call(Event.create)
         } else if (this.checkSnapshotStructure(snapshot)) {
-            this.redraw(snapshot);
+            this.redraw(snapshot)
 
-            this.map.zoom.center("position", 0);
+            this.map.zoom.center('position', 0)
 
-            this.save();
+            this.save()
 
-            this.map.events.call(Event.create);
+            this.map.events.call(Event.create)
         } else {
-            Log.error("The snapshot is not correct");
+            Log.error('The snapshot is not correct')
         }
     };
 
@@ -73,8 +73,8 @@ export default class History {
      */
     public undo = () => {
         if (this.index > 0) {
-            this.redraw(this.snapshots[--this.index]);
-            this.map.events.call(Event.undo);
+            this.redraw(this.snapshots[--this.index])
+            this.map.events.call(Event.undo)
         }
     };
 
@@ -83,8 +83,8 @@ export default class History {
      */
     public redo = () => {
         if (this.index < this.snapshots.length - 1) {
-            this.redraw(this.snapshots[++this.index]);
-            this.map.events.call(Event.redo);
+            this.redraw(this.snapshots[++this.index])
+            this.map.events.call(Event.redo)
         }
     };
 
@@ -93,11 +93,11 @@ export default class History {
      */
     public save() {
         if (this.index < this.snapshots.length - 1) {
-            this.snapshots.splice(this.index + 1);
+            this.snapshots.splice(this.index + 1)
         }
 
-        this.snapshots.push(this.getSnapshot());
-        this.index++;
+        this.snapshots.push(this.getSnapshot())
+        this.index++
     }
 
     /**
@@ -108,7 +108,7 @@ export default class History {
         return {
             snapshots: this.snapshots.slice(0),
             index: this.index
-        };
+        }
     };
 
     /**
@@ -116,10 +116,10 @@ export default class History {
      * @param {MapSnapshot} snapshot
      */
     private redraw(snapshot: MapSnapshot) {
-        this.map.nodes.clear();
+        this.map.nodes.clear()
 
         snapshot.forEach((property: ExportNodeProperties) => {
-            let properties: NodeProperties = {
+            const properties: NodeProperties = {
                 id: this.sanitizeNodeId(property.id),
                 parent: this.map.nodes.getNode(this.sanitizeNodeId(property.parent)),
                 k: property.k,
@@ -129,18 +129,18 @@ export default class History {
                 colors: Utils.cloneObject(property.colors) as Colors,
                 font: Utils.cloneObject(property.font) as Font,
                 locked: property.locked
-            };
+            }
 
-            let node: Node = new Node(properties);
-            this.map.nodes.setNode(node.id, node);
-        });
+            const node: Node = new Node(properties)
+            this.map.nodes.setNode(node.id, node)
+        })
 
-        this.map.draw.clear();
-        this.map.draw.update();
+        this.map.draw.clear()
+        this.map.draw.update()
 
-        this.map.nodes.selectRootNode();
+        this.map.nodes.selectRootNode()
 
-        this.setCounter();
+        this.setCounter()
     }
 
     /**
@@ -149,19 +149,19 @@ export default class History {
      */
     private getSnapshot(): MapSnapshot {
         return this.map.nodes.getNodes().map((node: Node) => {
-            return this.map.nodes.getNodeProperties(node, false);
-        }).slice();
+            return this.map.nodes.getNodeProperties(node, false)
+        }).slice()
     }
 
     /**
      * Set the right counter value of the nodes.
      */
     private setCounter() {
-        let id = this.map.nodes.getNodes().map((node: Node) => {
-            let words = node.id.split("_");
+        const id = this.map.nodes.getNodes().map((node: Node) => {
+            const words = node.id.split('_')
             return parseInt(words[words.length - 1])
-        });
-        this.map.nodes.setCounter(Math.max(...id) + 1);
+        })
+        this.map.nodes.setCounter(Math.max(...id) + 1)
     }
 
     /**
@@ -170,9 +170,9 @@ export default class History {
      * @returns {string} newId
      */
     private sanitizeNodeId(oldId: string) {
-        if (typeof oldId === "string") {
-            let words = oldId.split("_");
-            return this.map.id + "_" + words[words.length - 2] + "_" + words[words.length - 1];
+        if (typeof oldId === 'string') {
+            const words = oldId.split('_')
+            return this.map.id + '_' + words[words.length - 2] + '_' + words[words.length - 1]
         }
     }
 
@@ -183,22 +183,22 @@ export default class History {
      */
     private checkSnapshotStructure(snapshot: MapSnapshot): boolean {
         if (!Array.isArray(snapshot)) {
-            return false;
+            return false
         }
 
         if (((<any>snapshot[0]).key && (<any>snapshot[0]).value)) {
-            this.convertOldMmp(snapshot);
+            this.convertOldMmp(snapshot)
         }
 
-        for (let node of snapshot) {
+        for (const node of snapshot) {
             if (!this.checkNodeProperties(node)) {
-                return false;
+                return false
             }
         }
 
-        this.translateNodePositions(snapshot);
+        this.translateNodePositions(snapshot)
 
-        return true;
+        return true
     }
 
     /**
@@ -207,29 +207,29 @@ export default class History {
      * @return {boolean} result
      */
     private checkNodeProperties(node: ExportNodeProperties) {
-        let conditions: boolean[] = [
-            typeof node.id === "string",
-            typeof node.parent === "string",
-            typeof node.k === "number",
-            typeof node.name === "string",
-            typeof node.locked === "boolean",
+        const conditions: boolean[] = [
+            typeof node.id === 'string',
+            typeof node.parent === 'string',
+            typeof node.k === 'number',
+            typeof node.name === 'string',
+            typeof node.locked === 'boolean',
             node.coordinates
-            && typeof node.coordinates.x === "number"
-            && typeof node.coordinates.y === "number",
+            && typeof node.coordinates.x === 'number'
+            && typeof node.coordinates.y === 'number',
             node.image
-            && typeof node.image.size === "number"
-            && typeof node.image.src === "string",
+            && typeof node.image.size === 'number'
+            && typeof node.image.src === 'string',
             node.colors
-            && typeof node.colors.background === "string"
-            && typeof node.colors.branch === "string"
-            && typeof node.colors.name === "string",
+            && typeof node.colors.background === 'string'
+            && typeof node.colors.branch === 'string'
+            && typeof node.colors.name === 'string',
             node.font
-            && typeof node.font.size === "number"
-            && typeof node.font.weight === "string"
-            && typeof node.font.style === "string"
-        ];
+            && typeof node.font.size === 'number'
+            && typeof node.font.weight === 'string'
+            && typeof node.font.style === 'string'
+        ]
 
-        return conditions.every(condition => condition);
+        return conditions.every(condition => condition)
     }
 
     /**
@@ -237,33 +237,33 @@ export default class History {
      * @param {Array} snapshot
      */
     private convertOldMmp(snapshot: Array<any>) {
-        for (let node of snapshot) {
-            let oldNode = Utils.cloneObject(node);
-            Utils.clearObject(node);
+        for (const node of snapshot) {
+            const oldNode = Utils.cloneObject(node)
+            Utils.clearObject(node)
 
-            node.id = "map_node_" + oldNode.key.substr(4);
-            node.parent = oldNode.value.parent ? "map_node_" + oldNode.value.parent.substr(4) : "";
-            node.k = oldNode.value.k;
-            node.name = oldNode.value.name;
-            node.locked = oldNode.value.fixed;
+            node.id = 'map_node_' + oldNode.key.substr(4)
+            node.parent = oldNode.value.parent ? 'map_node_' + oldNode.value.parent.substr(4) : ''
+            node.k = oldNode.value.k
+            node.name = oldNode.value.name
+            node.locked = oldNode.value.fixed
             node.coordinates = {
                 x: oldNode.value.x,
                 y: oldNode.value.y
-            };
+            }
             node.image = {
-                size: parseInt(oldNode.value["image-size"]),
-                src: oldNode.value["image-src"]
-            };
+                size: parseInt(oldNode.value['image-size']),
+                src: oldNode.value['image-src']
+            }
             node.colors = {
-                background: oldNode.value["background-color"],
-                branch: oldNode.value["branch-color"] || "",
-                name: oldNode.value["text-color"]
-            };
+                background: oldNode.value['background-color'],
+                branch: oldNode.value['branch-color'] || '',
+                name: oldNode.value['text-color']
+            }
             node.font = {
-                size: parseInt(oldNode.value["font-size"]),
-                weight: oldNode.value.bold ? "bold" : "normal",
-                style: oldNode.value.italic ? "italic" : "normal"
-            };
+                size: parseInt(oldNode.value['font-size']),
+                weight: oldNode.value.bold ? 'bold' : 'normal',
+                style: oldNode.value.italic ? 'italic' : 'normal'
+            }
         }
     }
 
@@ -272,17 +272,17 @@ export default class History {
      * @param {MapSnapshot} snapshot
      */
     private translateNodePositions(snapshot: MapSnapshot) {
-        let oldRootNode = this.map.nodes.getRoot(),
+        const oldRootNode = this.map.nodes.getRoot(),
             newRootNode = (<any>snapshot).find((node: ExportNodeProperties) => {
-                let words = node.id.split("_");
-                return words[words.length - 1] === "0";
+                const words = node.id.split('_')
+                return words[words.length - 1] === '0'
             }),
             dx = newRootNode.coordinates.x - oldRootNode.coordinates.x,
-            dy = newRootNode.coordinates.y - oldRootNode.coordinates.y;
+            dy = newRootNode.coordinates.y - oldRootNode.coordinates.y
 
-        for (let node of snapshot) {
-            node.coordinates.x -= dx;
-            node.coordinates.y -= dy;
+        for (const node of snapshot) {
+            node.coordinates.x -= dx
+            node.coordinates.y -= dy
         }
     }
 

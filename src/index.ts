@@ -5,6 +5,7 @@ import Map from './map/map'
 /**
  * The version of the library
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const version = (<any>pkg).version
 
 /**
@@ -13,7 +14,7 @@ export const version = (<any>pkg).version
  * @param {OptionParameters} options
  * @returns {Map}
  */
-export function create(id: string, options?: OptionParameters) {
+export function create(id: string, options?: OptionParameters): Map {
     return new Map(id, options)
 }
 

@@ -1,4 +1,6 @@
-import Log from "./log";
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import Log from './log'
 
 /**
  * A list of general useful functions.
@@ -12,11 +14,11 @@ export default class Utils {
      */
     static cloneObject(object: object): any {
         if (object === null) {
-            return null;
-        } else if (typeof object === "object") {
-            return JSON.parse(JSON.stringify(object));
+            return null
+        } else if (typeof object === 'object') {
+            return JSON.parse(JSON.stringify(object))
         } else {
-            Log.error("Impossible to clone a non-object", "type");
+            Log.error('Impossible to clone a non-object', 'type')
         }
     }
 
@@ -24,9 +26,9 @@ export default class Utils {
      * Clear an object.
      * @param {object} object
      */
-    static clearObject(object: object) {
-        for (let property in object) {
-            delete object[property];
+    static clearObject(object: object): void {
+        for (const property in object) {
+            delete object[property]
         }
     }
 
@@ -36,13 +38,13 @@ export default class Utils {
      * @returns {Array}
      */
     static fromObjectToArray(object: object): Array<any> {
-        let array = [];
+        const array = []
 
-        for (let p in object) {
-            array.push(object[p]);
+        for (const p in object) {
+            array.push(object[p])
         }
 
-        return array;
+        return array
     }
 
     /**
@@ -52,38 +54,38 @@ export default class Utils {
      * @param {boolean} restricted
      * @returns {object} result
      */
-    static mergeObjects(object1: object, object2: object, restricted: boolean = false): object {
+    static mergeObjects(object1: object, object2: object, restricted = false): object {
         if (object2 === undefined && this.isPureObjectType(object1)) {
-            return this.cloneObject(object1);
+            return this.cloneObject(object1)
         } else if (object1 === undefined && this.isPureObjectType(object2)) {
-            return this.cloneObject(object2);
+            return this.cloneObject(object2)
         } else if (!this.isPureObjectType(object1) || !this.isPureObjectType(object2)) {
-            Log.error("Only two pure objects can be merged", "type");
+            Log.error('Only two pure objects can be merged', 'type')
         }
 
-        let result = this.cloneObject(object1);
+        const result = this.cloneObject(object1)
 
-        for (let property in object2) {
-            let value = object2[property];
+        for (const property in object2) {
+            const value = object2[property]
 
             if (!restricted || result[property] !== undefined) {
                 if (this.isPrimitiveType(value) || value === null) {
-                    result[property] = value;
+                    result[property] = value
                 } else if (Array.isArray(value)) {
-                    result[property] = Utils.cloneObject(value);
+                    result[property] = Utils.cloneObject(value)
                 } else if (this.isPureObjectType(value)) {
                     if (this.isPureObjectType(result[property])) {
-                        result[property] = Utils.mergeObjects(result[property], value);
+                        result[property] = Utils.mergeObjects(result[property], value)
                     } else {
-                        result[property] = Utils.cloneObject(value);
+                        result[property] = Utils.cloneObject(value)
                     }
                 } else {
-                    Log.error(`Type "${typeof value}" not allowed here`, "type");
+                    Log.error(`Type "${typeof value}" not allowed here`, 'type')
                 }
             }
         }
 
-        return result;
+        return result
     }
 
     /**
@@ -92,24 +94,24 @@ export default class Utils {
      * @return {string} css
      */
     static cssRules(element: HTMLElement) {
-        let css = "", sheets = document.styleSheets;
+        let css = '', sheets = document.styleSheets
 
         for (let i = 0; i < sheets.length; i++) {
-            let rules = (<any>sheets[i]).cssRules;
+            const rules = (<any>sheets[i]).cssRules
 
             if (rules) {
                 for (let j = 0; j < rules.length; j++) {
-                    let rule = rules[j],
-                        fontFace = rule.cssText.match(/^@font-face/);
+                    const rule = rules[j],
+                        fontFace = rule.cssText.match(/^@font-face/)
 
                     if (element.querySelector(rule.selectorText) || fontFace) {
-                        css += rule.cssText;
+                        css += rule.cssText
                     }
                 }
             }
         }
 
-        return css;
+        return css
     }
 
     /**
@@ -117,11 +119,11 @@ export default class Utils {
      * @param value
      * @returns {boolean}
      */
-    static isPrimitiveType(value: any) {
-        return typeof value === "string" ||
-            typeof value === "number" ||
-            typeof value === "boolean" ||
-            typeof value === "undefined";
+    static isPrimitiveType(value: any): boolean {
+        return typeof value === 'string' ||
+            typeof value === 'number' ||
+            typeof value === 'boolean' ||
+            typeof value === 'undefined'
     }
 
     /**
@@ -129,15 +131,15 @@ export default class Utils {
      * @param value
      * @returns {boolean}
      */
-    static isPureObjectType(value: any) {
-        return typeof value === "object" && !Array.isArray(value) && value !== null;
+    static isPureObjectType(value: any): boolean {
+        return typeof value === 'object' && !Array.isArray(value) && value !== null
     }
 
     /**
      * Remove all ranges of window.
      */
     static removeAllRanges() {
-        window.getSelection().removeAllRanges();
+        window.getSelection().removeAllRanges()
     }
 
     /**
@@ -145,14 +147,14 @@ export default class Utils {
      * @param {HTMLElement} element
      */
     static focusWithCaretAtEnd(element: HTMLElement) {
-        let range = document.createRange(),
-            sel = window.getSelection();
+        const range = document.createRange(),
+            sel = window.getSelection()
 
-        element.focus();
-        range.selectNodeContents(element);
-        range.collapse(false);
-        sel.removeAllRanges();
-        sel.addRange(range);
+        element.focus()
+        range.selectNodeContents(element)
+        range.collapse(false)
+        sel.removeAllRanges()
+        sel.addRange(range)
     }
 
 }

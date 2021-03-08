@@ -1,7 +1,7 @@
-import {dispatch} from "d3";
-import {Dispatch} from "d3-dispatch";
-import Utils from "../../utils/utils";
-import Log from "../../utils/log";
+import {dispatch} from 'd3'
+import {Dispatch} from 'd3-dispatch'
+import Utils from '../../utils/utils'
+import Log from '../../utils/log'
 
 /**
  * Manage the events of the map.
@@ -14,9 +14,9 @@ export default class Events {
      * Initialize the events.
      */
     constructor() {
-        let events = Utils.fromObjectToArray(Event);
+        const events = Utils.fromObjectToArray(Event)
 
-        this.dispatcher = dispatch(...events);
+        this.dispatcher = dispatch(...events)
     }
 
     /**
@@ -25,7 +25,7 @@ export default class Events {
      * @param parameters
      */
     public call(event: Event, ...parameters) {
-        return this.dispatcher.call(event, ...parameters);
+        return this.dispatcher.call(event, ...parameters)
     }
 
     /**
@@ -34,31 +34,31 @@ export default class Events {
      * @param {Function} callback
      */
     public on = (event: string, callback: Function) => {
-        if (typeof event !== "string") {
-            Log.error("The event must be a string", "type");
+        if (typeof event !== 'string') {
+            Log.error('The event must be a string', 'type')
         }
 
         if (!Event[event]) {
-            Log.error("The event does not exist");
+            Log.error('The event does not exist')
         }
 
-        this.dispatcher.on(Event[event], <any>callback);
+        this.dispatcher.on(Event[event], <any>callback)
     };
 
 }
 
 export enum Event {
-    create = "mmp-create",
-    center = "mmp-center",
-    undo = "mmp-undo",
-    redo = "mmp-redo",
-    exportJSON = "mmp-export-json",
-    exportImage = "mmp-export-image",
-    zoomIn = "mmp-zoom-in",
-    zoomOut = "mmp-zoom-out",
-    nodeSelect = "mmp-node-select",
-    nodeDeselect = "mmp-node-deselect",
-    nodeUpdate = "mmp-node-update",
-    nodeCreate = "mmp-node-create",
-    nodeRemove = "mmp-node-remove"
+    create = 'mmp-create',
+    center = 'mmp-center',
+    undo = 'mmp-undo',
+    redo = 'mmp-redo',
+    exportJSON = 'mmp-export-json',
+    exportImage = 'mmp-export-image',
+    zoomIn = 'mmp-zoom-in',
+    zoomOut = 'mmp-zoom-out',
+    nodeSelect = 'mmp-node-select',
+    nodeDeselect = 'mmp-node-deselect',
+    nodeUpdate = 'mmp-node-update',
+    nodeCreate = 'mmp-node-create',
+    nodeRemove = 'mmp-node-remove'
 }

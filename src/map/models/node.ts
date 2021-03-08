@@ -1,51 +1,51 @@
-import * as d3 from "d3";
+import * as d3 from 'd3'
 
 /**
  * Model of the nodes.
  */
 export default class Node implements NodeProperties {
 
-    public id: string;
-    public parent: Node;
-    public k: number;
+    public id: string
+    public parent: Node
+    public k: number
 
-    public name: string;
-    public dimensions: Dimensions;
-    public coordinates: Coordinates;
-    public image: Image;
-    public colors: Colors;
-    public font: Font;
-    public locked: boolean;
-    public dom: SVGGElement;
+    public name: string
+    public dimensions: Dimensions
+    public coordinates: Coordinates
+    public image: Image
+    public colors: Colors
+    public font: Font
+    public locked: boolean
+    public dom: SVGGElement
 
     /**
      * Initialize the node properties, the dimensions and the k coefficient.
      * @param {NodeProperties} properties
      */
     constructor(properties: NodeProperties) {
-        this.id = properties.id;
-        this.parent = properties.parent;
-        this.name = properties.name;
-        this.coordinates = properties.coordinates;
-        this.colors = properties.colors;
-        this.image = properties.image;
-        this.font = properties.font;
-        this.locked = properties.locked;
+        this.id = properties.id
+        this.parent = properties.parent
+        this.name = properties.name
+        this.coordinates = properties.coordinates
+        this.colors = properties.colors
+        this.image = properties.image
+        this.font = properties.font
+        this.locked = properties.locked
 
         this.dimensions = {
             width: 0,
             height: 0
-        };
-        this.k = properties.k || d3.randomUniform(-20, 20)();
+        }
+        this.k = properties.k || d3.randomUniform(-20, 20)()
     }
 
     /**
      * Return true if the node is the root or false.
      * @returns {boolean}
      */
-    public isRoot() {
-        let words = this.id.split("_");
-        return words[words.length - 1] === "0";
+    public isRoot(): boolean {
+        const words = this.id.split('_')
+        return words[words.length - 1] === '0'
     }
 
     /**
@@ -53,14 +53,14 @@ export default class Node implements NodeProperties {
      * @returns {number} level
      */
     public getLevel(): number {
-        let level = 1, parent = this.parent;
+        let level = 1, parent = this.parent
 
         while (parent) {
-            level++;
-            parent = parent.parent;
+            level++
+            parent = parent.parent
         }
 
-        return level;
+        return level
     }
 
     /**
@@ -68,7 +68,7 @@ export default class Node implements NodeProperties {
      * @returns {HTMLDivElement} div
      */
     public getNameDOM(): HTMLDivElement {
-        return this.dom.querySelector("foreignObject > div");
+        return this.dom.querySelector('foreignObject > div')
     }
 
     /**
@@ -76,7 +76,7 @@ export default class Node implements NodeProperties {
      * @returns {SVGPathElement} path
      */
     public getBackgroundDOM(): SVGPathElement {
-        return this.dom.querySelector("path");
+        return this.dom.querySelector('path')
     }
 
     /**
@@ -84,7 +84,7 @@ export default class Node implements NodeProperties {
      * @returns {SVGImageElement} image
      */
     public getImageDOM(): SVGImageElement {
-        return this.dom.querySelector("image");
+        return this.dom.querySelector('image')
     }
 
 }

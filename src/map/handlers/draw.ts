@@ -1,130 +1,128 @@
-import * as d3 from "d3";
-import Map from "../map";
-import Utils from "../../utils/utils";
-import Node from "../models/node";
-import {Path} from "d3-path";
+import * as d3 from 'd3'
+import Map from '../map'
+import Utils from '../../utils/utils'
+import Node from '../models/node'
+import {Path} from 'd3-path'
 
 /**
  * Draw the map and update it.
  */
 export default class Draw {
 
-    private map: Map;
+    private map: Map
 
     /**
      * Get the associated map instance.
      * @param {Map} map
      */
     constructor(map: Map) {
-        this.map = map;
+        this.map = map
     }
 
     /**
      * Create svg and main css map properties.
      */
-    public create() {
-        this.map.dom.container = d3.select("#" + this.map.id)
-            .style("position", "relative");
+    public create(): void {
+        this.map.dom.container = d3.select('#' + this.map.id)
+            .style('position', 'relative')
 
-        this.map.dom.svg = this.map.dom.container.append("svg")
-            .style("position", "absolute")
-            .style("width", "100%")
-            .style("height", "100%")
-            .style("top", 0)
-            .style("left", 0);
+        this.map.dom.svg = this.map.dom.container.append('svg')
+            .style('position', 'absolute')
+            .style('width', '100%')
+            .style('height', '100%')
+            .style('top', 0)
+            .style('left', 0)
 
-        this.map.dom.svg.append("rect")
-            .attr("width", "100%")
-            .attr("height", "100%")
-            .attr("fill", "white")
-            .attr("pointer-events", "all")
-            .on("click", () => {
+        this.map.dom.svg.append('rect')
+            .attr('width', '100%')
+            .attr('height', '100%')
+            .attr('fill', 'white')
+            .attr('pointer-events', 'all')
+            .on('click', () => {
                 // Deselect the selected node when click on the map background
-                this.map.nodes.deselectNode();
-            });
+                this.map.nodes.deselectNode()
+            })
 
-        this.map.dom.g = this.map.dom.svg.append("g");
+        this.map.dom.g = this.map.dom.svg.append('g')
     }
 
     /**
      * Update the dom of the map with the (new) nodes.
      */
-    public update() {
-        let nodes = this.map.nodes.getNodes(),
+    public update(): void {
+        const nodes = this.map.nodes.getNodes(),
             dom = {
-                nodes: this.map.dom.g.selectAll("." + this.map.id + "_node").data(nodes),
-                branches: this.map.dom.g.selectAll("." + this.map.id + "_branch").data(nodes.slice(1))
-            };
-        let tapedTwice = false;
+                nodes: this.map.dom.g.selectAll('.' + this.map.id + '_node').data(nodes),
+                branches: this.map.dom.g.selectAll('.' + this.map.id + '_branch').data(nodes.slice(1))
+            }
+        let tapedTwice = false
 
-        let outer = dom.nodes.enter().append("g")
-            .style("cursor", "pointer")
-            .attr("class", this.map.id + "_node")
-            .attr("id", function (node: Node) {
-                node.dom = this;
-                return node.id;
+        const outer = dom.nodes.enter().append('g')
+            .style('cursor', 'pointer')
+            .attr('class', this.map.id + '_node')
+            .attr('id', function (node: Node) {
+                node.dom = this
+                return node.id
             })
-            .attr("transform", (node: Node) => "translate(" + node.coordinates.x + "," + node.coordinates.y + ")")
-            .on("dblclick", (node: Node) => {
-                // d3.event.stopPropagation();
-                this.enableNodeNameEditing(node);
-            }).on('touchstart', (node: Node) => {
+            .attr('transform', (node: Node) => 'translate(' + node.coordinates.x + ',' + node.coordinates.y + ')')
+            .on('dblclick', (event: MouseEvent, node: Node) => {
+                this.enableNodeNameEditing(node)
+            })
+            .on('touchstart', (node: Node) => {
                 if (!tapedTwice) {
-                    tapedTwice = true;
-
+                    tapedTwice = true
                     setTimeout(function () {
-                        tapedTwice = false;
-                    }, 300);
-
-                    return false;
+                        tapedTwice = false
+                    }, 300)
+                    return false
                 }
-
-                this.enableNodeNameEditing(node);
-            });
+                this.enableNodeNameEditing(node)
+            })
 
         if (this.map.options.drag === true) {
-            outer.call(this.map.drag.getDragBehavior());
+            outer.call(this.map.drag.getDragBehavior())
         } else {
-            outer.on("mousedown", (node: Node) => {
-                this.map.nodes.selectNode(node.id);
-            });
+            outer.on('mousedown', (node: Node) => {
+                this.map.nodes.selectNode(node.id)
+            })
         }
 
         // Set text of the node
-        outer.insert("foreignObject")
+        outer.insert('foreignObject')
             .html((node: Node) => this.createNodeNameDOM(node))
             .each((node: Node) => {
-                this.updateNodeNameContainer(node);
-            });
+                this.updateNodeNameContainer(node)
+            })
 
         // Set background of the node
-        outer.insert("path", "foreignObject")
-            .style("fill", (node: Node) => node.colors.background)
-            .style("stroke-width", 3)
-            .attr("d", (node: Node) => this.drawNodeBackground(node));
+        outer.insert('path', 'foreignObject')
+            .style('fill', (node: Node) => node.colors.background)
+            // .style('fill', 'none')
+            .style('stroke-width', 1)
+            .attr('d', (node: Node) => this.drawNodeBackground(node))
 
         // Set image of the node
         outer.each((node: Node) => {
-            this.setImage(node);
-        });
+            this.setImage(node)
+        })
 
 
-        dom.branches.enter().insert("path", "g")
-            .style("fill", (node: Node) => node.colors.branch)
-            .style("stroke", (node: Node) => node.colors.branch)
-            .attr("class", this.map.id + "_branch")
-            .attr("id", (node: Node) => node.id + "_branch")
-            .attr("d", (node: Node) => this.drawBranch(node));
+        dom.branches.enter().insert('path', 'g')
+            .style('fill', 'none')
+            .style('stroke', (node: Node) => node.colors.branch)
+            .attr('class', this.map.id + '_branch')
+            .attr('id', (node: Node) => node.id + '_branch')
+            .attr('d', (node: Node) => this.drawBranch(node))
 
-        dom.nodes.exit().remove();
-        dom.branches.exit().remove();
+        dom.nodes.exit().remove()
+        dom.branches.exit().remove()
     }
 
     /**
      * Remove all nodes and branches of the map.
      */
-    public clear() {
-        d3.selectAll("." + this.map.id + "_node, ." + this.map.id + "_branch").remove();
+    public clear(): void {
+        d3.selectAll('.' + this.map.id + '_node, .' + this.map.id + '_branch').remove()
     }
 
     /**
@@ -133,24 +131,23 @@ export default class Draw {
      * @returns {Path} path
      */
     public drawNodeBackground(node: Node): Path {
-        let name = node.getNameDOM(),
-            path = d3.path();
+        const name = node.getNameDOM(), path = d3.path()
 
-        node.dimensions.width = name.clientWidth + 45;
-        node.dimensions.height = name.clientHeight + 30;
+        node.dimensions.width = name.clientWidth + 45
+        node.dimensions.height = name.clientHeight + 30
 
-        let x = node.dimensions.width / 2,
-            y = node.dimensions.height / 2,
-            k = node.k;
+        const x = node.dimensions.width / 2,
+            y = node.dimensions.height / 2
+            // k = node.k
 
-        path.moveTo(-x, k / 3);
-        path.bezierCurveTo(-x, -y + 10, -x + 10, -y, k, -y);
-        path.bezierCurveTo(x - 10, -y, x, -y + 10, x, k / 3);
-        path.bezierCurveTo(x, y - 10, x - 10, y, k, y);
-        path.bezierCurveTo(-x + 10, y, -x, y - 10, -x, k / 3);
-        path.closePath();
-
-        return path;
+        const r = 4
+        path.moveTo(-x, 0)
+        path.arcTo(-x, -y, -x + r, -y, r)
+        path.arcTo(x, -y, x, -y + r, r)
+        path.arcTo(x, y, x - r, y, r)
+        path.arcTo(-x, y, -x, y - r, r)
+        path.closePath()
+        return path
     }
 
     /**
@@ -159,82 +156,82 @@ export default class Draw {
      * @returns {Path} path
      */
     public drawBranch(node: Node): Path {
-        let parent = node.parent,
+        const parent = node.parent,
             path = d3.path(),
             level = node.getLevel(),
             width = 22 - (level < 6 ? level : 6) * 3,
             mx = (parent.coordinates.x + node.coordinates.x) / 2,
             ory = parent.coordinates.y < node.coordinates.y + node.dimensions.height / 2 ? -1 : 1,
             orx = parent.coordinates.x > node.coordinates.x ? -1 : 1,
-            inv = orx * ory;
+            inv = orx * ory
 
-        path.moveTo(parent.coordinates.x, parent.coordinates.y - width * .8);
+        path.moveTo(parent.coordinates.x, parent.coordinates.y)
         path.bezierCurveTo(
             mx - width * inv, parent.coordinates.y - width / 2,
             parent.coordinates.x - width / 2 * inv, node.coordinates.y + node.dimensions.height / 2 - width / 3,
-            node.coordinates.x - node.dimensions.width / 3 * orx, node.coordinates.y + node.dimensions.height / 2 + 3
-        );
-        path.bezierCurveTo(
-            parent.coordinates.x + width / 2 * inv, node.coordinates.y + node.dimensions.height / 2 + width / 3,
-            mx + width * inv, parent.coordinates.y + width / 2,
-            parent.coordinates.x, parent.coordinates.y + width * .8
-        );
-        path.closePath();
+            node.coordinates.x, node.coordinates.y
+        )
+        // path.bezierCurveTo(
+        //     parent.coordinates.x + width / 2 * inv, node.coordinates.y + node.dimensions.height / 2 + width / 3,
+        //     mx + width * inv, parent.coordinates.y + width / 2,
+        //     parent.coordinates.x, parent.coordinates.y + width * .8
+        // )
+        // path.closePath()
 
-        return path;
+        return path
     }
 
     /**
      * Update the node HTML elements.
      * @param {Node} node
      */
-    public updateNodeShapes(node: Node) {
-        let background = node.getBackgroundDOM();
+    public updateNodeShapes(node: Node): void {
+        const background = node.getBackgroundDOM()
 
-        d3.select(background).attr("d", (node: Node) => <any>this.drawNodeBackground(node));
-        d3.selectAll("." + this.map.id + "_branch").attr("d", (node: Node) => <any>this.drawBranch(node));
+        d3.select(background).attr('d', (node: Node) => <any>this.drawNodeBackground(node))
+        d3.selectAll('.' + this.map.id + '_branch').attr('d', (node: Node) => <any>this.drawBranch(node))
 
-        this.updateImagePosition(node);
+        this.updateImagePosition(node)
 
-        this.updateNodeNameContainer(node);
+        this.updateNodeNameContainer(node)
     }
 
     /**
      * Set main properties of node image and create it if it does not exist.
      * @param {Node} node
      */
-    public setImage(node: Node) {
-        let domImage = node.getImageDOM();
+    public setImage(node: Node): void {
+        let domImage = node.getImageDOM()
 
         if (!domImage) {
-            domImage = document.createElementNS("http://www.w3.org/2000/svg", "image");
-            node.dom.appendChild(domImage);
+            domImage = document.createElementNS('http://www.w3.org/2000/svg', 'image')
+            node.dom.appendChild(domImage)
         }
 
-        if (node.image.src !== "") {
-            let image = new Image();
+        if (node.image.src !== '') {
+            const image = new Image()
 
-            image.src = node.image.src;
+            image.src = node.image.src
 
             image.onload = function () {
-                let h = node.image.size,
+                const h = node.image.size,
                     w = (<any>this).width * h / (<any>this).height,
                     y = -(h + node.dimensions.height / 2 + 5),
-                    x = -w / 2;
+                    x = -w / 2
 
-                domImage.setAttribute("href", node.image.src);
-                domImage.setAttribute("height", h.toString());
-                domImage.setAttribute("width", w.toString());
-                domImage.setAttribute("y", y.toString());
-                domImage.setAttribute("x", x.toString());
-            };
+                domImage.setAttribute('href', node.image.src)
+                domImage.setAttribute('height', h.toString())
+                domImage.setAttribute('width', w.toString())
+                domImage.setAttribute('y', y.toString())
+                domImage.setAttribute('x', x.toString())
+            }
 
             image.onerror = function () {
-                domImage.remove();
-                node.image.src = "";
-            };
+                domImage.remove()
+                node.image.src = ''
+            }
         } else {
-            domImage.remove();
+            domImage.remove()
         }
     }
 
@@ -242,11 +239,11 @@ export default class Draw {
      * Update the node image position.
      * @param {Node} node
      */
-    public updateImagePosition(node: Node) {
-        if (node.image.src !== "") {
-            let image = node.getImageDOM(),
-                y = -((<any>image).getBBox().height + node.dimensions.height / 2 + 5);
-            image.setAttribute("y", y.toString());
+    public updateImagePosition(node: Node): void {
+        if (node.image.src !== '') {
+            const image = node.getImageDOM(),
+                y = -((<any>image).getBBox().height + node.dimensions.height / 2 + 5)
+            image.setAttribute('y', y.toString())
         }
     }
 
@@ -254,27 +251,29 @@ export default class Draw {
      * Enable and manage all events for the name editing.
      * @param {Node} node
      */
-    public enableNodeNameEditing(node: Node) {
-        let name = node.getNameDOM();
+    public enableNodeNameEditing(node: Node): void {
+        if (this.map.options.readonly)
+            return
+        const name = node.getNameDOM()
 
-        Utils.focusWithCaretAtEnd(name);
+        Utils.focusWithCaretAtEnd(name)
 
-        name.style.setProperty("cursor", "auto");
+        name.style.setProperty('cursor', 'auto')
 
         name.ondblclick = name.onmousedown = (event) => {
-            event.stopPropagation();
-        };
+            event.stopPropagation()
+        }
 
         name.oninput = () => {
-            this.updateNodeShapes(node);
-        };
+            this.updateNodeShapes(node)
+        }
 
         // Allow only some shortcuts.
         name.onkeydown = (event) => {
             // Unfocus the node.
             if (event.code === 'Escape') {
-                Utils.removeAllRanges();
-                name.blur();
+                Utils.removeAllRanges()
+                name.blur()
             }
 
             if (event.ctrlKey || event.metaKey) {
@@ -290,43 +289,43 @@ export default class Draw {
                     case 'ArrowDown':
                     case 'Backspace':
                     case 'Delete':
-                        return true;
+                        return true
                     default:
-                        return false;
+                        return false
                 }
             }
 
             switch (event.code) {
                 case 'Tab':
-                    return false;
+                    return false
                 default:
-                    return true;
+                    return true
             }
-        };
+        }
 
         // Remove html formatting when paste text on node
         name.onpaste = (event) => {
-            event.preventDefault();
+            event.preventDefault()
 
-            let text = event.clipboardData.getData("text/plain");
+            const text = event.clipboardData.getData('text/plain')
 
-            document.execCommand("insertHTML", false, text);
-        };
+            document.execCommand('insertHTML', false, text)
+        }
 
         name.onblur = () => {
-            name.innerHTML = name.innerHTML === "<br>" ? "" : name.innerHTML
+            name.innerHTML = name.innerHTML === '<br>' ? '' : name.innerHTML
 
             if (name.innerHTML !== node.name) {
-                this.map.nodes.updateNode("name", name.innerHTML);
+                this.map.nodes.updateNode('name', name.innerHTML)
             }
 
             name.ondblclick = name.onmousedown = name.onblur =
-                name.onkeydown = name.oninput = name.onpaste = null;
+                name.onkeydown = name.oninput = name.onpaste = null
 
-            name.style.setProperty("cursor", "pointer");
+            name.style.setProperty('cursor', 'pointer')
 
-            name.blur();
-        };
+            name.blur()
+        }
     }
 
     /**
@@ -334,14 +333,14 @@ export default class Draw {
      * @param {Node} node
      */
     private updateNodeNameContainer(node: Node) {
-        let name = node.getNameDOM(),
-            foreignObject: SVGForeignObjectElement = <SVGForeignObjectElement>name.parentNode;
+        const name = node.getNameDOM(),
+            foreignObject: SVGForeignObjectElement = <SVGForeignObjectElement>name.parentNode
 
         if (name.offsetWidth !== 0) {
-            foreignObject.setAttribute("x", (-name.clientWidth / 2).toString());
-            foreignObject.setAttribute("y", (-name.clientHeight / 2).toString());
-            foreignObject.setAttribute("width", name.clientWidth.toString());
-            foreignObject.setAttribute("height", name.clientHeight.toString());
+            foreignObject.setAttribute('x', (-name.clientWidth / 2).toString())
+            foreignObject.setAttribute('y', (-name.clientHeight / 2).toString())
+            foreignObject.setAttribute('width', name.clientWidth.toString())
+            foreignObject.setAttribute('height', name.clientHeight.toString())
         }
     }
 
@@ -351,24 +350,25 @@ export default class Draw {
      * @returns {string} html
      */
     private createNodeNameDOM(node: Node) {
-        let div = document.createElement("div");
+        const div = document.createElement('div')
 
-        div.style.setProperty("font-size", node.font.size.toString() + "px");
-        div.style.setProperty("color", node.colors.name);
-        div.style.setProperty("font-style", node.font.style);
-        div.style.setProperty("font-weight", node.font.weight);
-        div.style.setProperty("text-decoration", node.font.decoration);
+        div.style.setProperty('font-size', node.font.size.toString() + 'px')
+        div.style.setProperty('color', node.colors.name)
+        div.style.setProperty('font-style', node.font.style)
+        div.style.setProperty('font-weight', node.font.weight)
+        div.style.setProperty('text-decoration', node.font.decoration)
 
-        div.style.setProperty("display", "inline-block");
-        div.style.setProperty("white-space", "pre");
-        div.style.setProperty("font-family", this.map.options.fontFamily);
-        div.style.setProperty("text-align", "center");
+        div.style.setProperty('display', 'inline-block')
+        div.style.setProperty('white-space', 'pre')
+        div.style.setProperty('font-family', this.map.options.fontFamily)
+        div.style.setProperty('text-align', 'center')
 
-        div.setAttribute("contenteditable", "true");
+        if (!this.map.options.readonly)
+            div.setAttribute('contenteditable', 'true')
 
-        div.innerHTML = node.name;
+        div.innerHTML = node.name
 
-        return div.outerHTML;
+        return div.outerHTML
     }
 
 }

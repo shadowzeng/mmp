@@ -5,5 +5,13 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
-    "eslint.validate": ["javascript"]
+    "eslint.validate": [
+        "javascript"
+    ],
+    "typescript.implementationsCodeLens.enabled": true,
+    "typescript.referencesCodeLens.enabled": true,
+    "vim.handleKeys": {
+        "<C-a>": false,
+        "<C-f>": false
+    },
 }

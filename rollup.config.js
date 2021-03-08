@@ -2,6 +2,7 @@ import typescript from "rollup-plugin-typescript2";
 import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
 import json from "rollup-plugin-json";
+import {terser} from "rollup-plugin-terser";
 
 const pkg = require("./package.json");
 
@@ -13,12 +14,13 @@ let config = {
         file: "build/" + pkg.name + ".js",
         globals: {
             d3: "d3"
-        }
+        },
+        plugins: [terser()],
     },
     external: ["d3"],
     plugins: [
         json(),
-        typescript()
+        typescript(),
     ]
 };
 
@@ -27,7 +29,6 @@ if (process.env.BUILD === "production") {
  * @module ${pkg.name}
  * @version ${pkg.version}
  * @file ${pkg.description}
- * @copyright ${pkg.author.name} ${new Date().getFullYear()}
  * @license ${pkg.license}
  * @see {@link ${pkg.homepage}|GitHub}
 */`;

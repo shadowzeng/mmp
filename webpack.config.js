@@ -1,6 +1,7 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
+  mode: 'development',
   devServer: {
     port: 8333,
     publicPath: '/dist/',
@@ -27,4 +28,4 @@ module.exports = {
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
   },
-};
+}
