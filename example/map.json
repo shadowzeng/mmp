@@ -1,0 +1,153 @@
+[
+    {
+        "id": "mmp1_node_0",
+        "parent": "",
+        "name": "Map",
+        "coordinates": {
+            "x": 612.5,
+            "y": 256.5
+        },
+        "image": {
+            "src": "",
+            "size": 70
+        },
+        "colors": {
+            "name": "#787878",
+            "background": "aliceblue",
+            "branch": ""
+        },
+        "font": {
+            "size": 20,
+            "style": "normal",
+            "weight": "normal"
+        },
+        "locked": false,
+        "k": -13.140927617775198
+    },
+    {
+        "id": "mmp1_node_1",
+        "parent": "mmp1_node_0",
+        "name": "Node1",
+        "coordinates": {
+            "x": 476.5,
+            "y": 305.5
+        },
+        "image": {
+            "src": "",
+            "size": 60
+        },
+        "colors": {
+            "name": "#787878",
+            "background": "#f9f9f9",
+            "branch": "#577a96"
+        },
+        "font": {
+            "size": 16,
+            "style": "normal",
+            "weight": "normal"
+        },
+        "locked": true,
+        "k": -2.4774091682527555
+    },
+    {
+        "id": "mmp1_node_2",
+        "parent": "mmp1_node_1",
+        "name": "Node2",
+        "coordinates": {
+            "x": 440.5,
+            "y": 215.5
+        },
+        "image": {
+            "src": "",
+            "size": 60
+        },
+        "colors": {
+            "name": "#787878",
+            "background": "#f9f9f9",
+            "branch": "#577a96"
+        },
+        "font": {
+            "size": 16,
+            "style": "normal",
+            "weight": "normal"
+        },
+        "locked": true,
+        "k": -1.1608787434225043
+    },
+    {
+        "id": "mmp1_node_3",
+        "parent": "mmp1_node_0",
+        "name": "Node3",
+        "payload": {},
+        "coordinates": {
+            "x": 758.5,
+            "y": 334.5
+        },
+        "image": {
+            "src": "",
+            "size": 60
+        },
+        "colors": {
+            "name": "#787878",
+            "background": "#f9f9f9",
+            "branch": "#577a96"
+        },
+        "font": {
+            "size": 16,
+            "style": "normal",
+            "weight": "normal"
+        },
+        "locked": true,
+        "k": 16.14639729037747
+    },
+    {
+        "id": "mmp1_node_4",
+        "parent": "mmp1_node_3",
+        "name": "Node4",
+        "coordinates": {
+            "x": 955.5,
+            "y": 289.5
+        },
+        "image": {
+            "src": "",
+            "size": 60
+        },
+        "colors": {
+            "name": "#787878",
+            "background": "#f9f9f9",
+            "branch": "#577a96"
+        },
+        "font": {
+            "size": 16,
+            "style": "normal",
+            "weight": "normal"
+        },
+        "locked": true,
+        "k": -2.223911620649819
+    },
+    {
+        "id": "mmp1_node_5",
+        "parent": "mmp1_node_3",
+        "name": "Node5",
+        "coordinates": {
+            "x": 866.5,
+            "y": 403.5
+        },
+        "image": {
+            "src": "",
+            "size": 60
+        },
+        "colors": {
+            "name": "#787878",
+            "background": "#f9f9f9",
+            "branch": "#577a96"
+        },
+        "font": {
+            "size": 16,
+            "style": "normal",
+            "weight": "normal"
+        },
+        "locked": true,
+        "k": -16.466453074317453
+    }
+]

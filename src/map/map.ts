@@ -68,7 +68,7 @@ export default class Map {
         return <any>this.createMindapInstance()
     }
 
-    private remove = () => {
+    private remove(): void {
         this.dom.svg.remove()
 
         const props = Object.keys(this.instance)
@@ -79,18 +79,18 @@ export default class Map {
 
     private createMindapInstance(): MindapInstance {
         return this.instance = {
-            on: this.events.on,
-            remove: this.remove,
-            new: this.history.new,
+            on: this.events.on.bind(this.events),
+            remove: this.remove.bind(this.remove),
+            new: this.history.new.bind(this.history),
             updateOptions: this.options.update.bind(this.options),
-            exportAsJSON: this.export.asJSON,
-            exportAsImage: this.export.asImage,
-            history: this.history.getHistory,
-            undo: this.history.undo,
-            redo: this.history.redo,
-            zoomIn: this.zoom.zoomIn,
-            zoomOut: this.zoom.zoomOut,
-            center: this.zoom.center,
+            exportAsJSON: this.export.asJSON.bind(this.export),
+            exportAsImage: this.export.asImage.bind(this.export),
+            history: this.history.getHistory.bind(this.history),
+            undo: this.history.undo.bind(this.history),
+            redo: this.history.redo.bind(this.history),
+            zoomIn: this.zoom.zoomIn.bind(this.zoom),
+            zoomOut: this.zoom.zoomOut.bind(this.zoom),
+            center: this.zoom.center.bind(this.zoom),
             addNode: this.nodes.addNode.bind(this.nodes),
             selectNode: this.nodes.selectNode.bind(this.nodes),
             editNode: this.nodes.editNode.bind(this.nodes),
@@ -98,9 +98,9 @@ export default class Map {
             nodeChildren: this.nodes.nodeChildren.bind(this.nodes),
             updateNode: this.nodes.updateNode.bind(this.nodes),
             removeNode: this.nodes.removeNode.bind(this.nodes),
-            copyNode: this.copyPaste.copy,
-            cutNode: this.copyPaste.cut,
-            pasteNode: this.copyPaste.paste
+            copyNode: this.copyPaste.copy.bind(this.copyPaste),
+            cutNode: this.copyPaste.cut.bind(this.copyPaste),
+            pasteNode: this.copyPaste.paste.bind(this.copyPaste),
         }
     }
 

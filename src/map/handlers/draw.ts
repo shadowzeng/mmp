@@ -3,6 +3,7 @@ import Map from '../map'
 import Utils from '../../utils/utils'
 import Node from '../models/node'
 import {Path} from 'd3-path'
+import {Event} from './events'
 
 /**
  * Draw the map and update it.
@@ -104,6 +105,7 @@ export default class Draw {
         // Set image of the node
         outer.each((node: Node) => {
             this.setImage(node)
+            this.setPayloadFlag(node)
         })
 
 
@@ -233,6 +235,24 @@ export default class Draw {
         } else {
             domImage.remove()
         }
+    }
+
+    public setPayloadFlag(node: Node): void {
+        if (!node.payload)
+            return
+        const {width, height} = node.dimensions
+        const r = 4
+        const cx = (-width/2 + 4 + r)
+        const cy = (height/2 - 4 - r)
+        d3.select(node.dom)
+            .append('circle')
+            .style('fill', 'darkseagreen')
+            .attr('cx', cx)
+            .attr('cy', cy)
+            .attr('r', r)
+            .on('click', () => {
+                this.map.events.call(Event.nodePayloadSelect, node.payload)
+            })
     }
 
     /**

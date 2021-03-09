@@ -9,9 +9,9 @@ import Utils from '../../utils/utils'
  */
 export default class History {
 
-    private map: Map;
+    private map: Map
 
-    private index: number;
+    private index: number
     private snapshots: MapSnapshot[]
 
     /**
@@ -31,13 +31,13 @@ export default class History {
      */
     public current = (): MapSnapshot => {
         return this.snapshots[this.index]
-    };
+    }
 
     /**
      * Replace old map with a new one or create a new empty map.
      * @param {MapSnapshot} snapshot
      */
-    public new = (snapshot?: MapSnapshot) => {
+    public new(snapshot?: MapSnapshot): void {
         if (snapshot === undefined) {
             const oldRootCoordinates = Utils.cloneObject(this.map.nodes.getRoot().coordinates)
 
@@ -63,35 +63,36 @@ export default class History {
             this.save()
 
             this.map.events.call(Event.create)
+            console.log(this.map)
         } else {
             Log.error('The snapshot is not correct')
         }
-    };
+    }
 
     /**
      * Undo last changes.
      */
-    public undo = () => {
+    public undo(): void {
         if (this.index > 0) {
             this.redraw(this.snapshots[--this.index])
             this.map.events.call(Event.undo)
         }
-    };
+    }
 
     /**
      * Redo one change which was undone.
      */
-    public redo = () => {
+    public redo(): void  {
         if (this.index < this.snapshots.length - 1) {
             this.redraw(this.snapshots[++this.index])
             this.map.events.call(Event.redo)
         }
-    };
+    }
 
     /**
      * Save the current snapshot of the mind map.
      */
-    public save() {
+    public save(): void {
         if (this.index < this.snapshots.length - 1) {
             this.snapshots.splice(this.index + 1)
         }
@@ -104,12 +105,12 @@ export default class History {
      * Return all history of map with all snapshots.
      * @returns {MapSnapshot[]}
      */
-    public getHistory = (): ExportHistory => {
+    public getHistory(): ExportHistory {
         return {
             snapshots: this.snapshots.slice(0),
             index: this.index
         }
-    };
+    }
 
     /**
      * Redraw the map with a new snapshot.
@@ -128,8 +129,10 @@ export default class History {
                 image: Utils.cloneObject(property.image) as Image,
                 colors: Utils.cloneObject(property.colors) as Colors,
                 font: Utils.cloneObject(property.font) as Font,
-                locked: property.locked
+                locked: property.locked,
             }
+            if (property.payload)
+                properties.payload = Utils.cloneObject(property.payload)
 
             const node: Node = new Node(properties)
             this.map.nodes.setNode(node.id, node)

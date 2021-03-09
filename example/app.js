@@ -15,6 +15,14 @@ let map = mmp.create('mmp1', { rootNode: { name: 'Map' }, readonly: false }),
         nameColor: document.getElementsByClassName('name-color')
     }
 
+fetch('./example/map.json').then(res => res.json()).then(json => {
+    map.new(json)
+    map.on('mindap-node-payload-select', payload => {
+        console.log('xxxx')
+        console.log(payload)
+    })
+})
+
 // Console messages
 function message(message, ...arguments) {
     console.log('%c' + message, 'color: #2f5226; font-size: 14px', ...arguments)

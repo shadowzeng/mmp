@@ -17,6 +17,8 @@ export default class Node implements NodeProperties {
     public font: Font
     public locked: boolean
     public dom: SVGGElement
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public payload?: any
 
     /**
      * Initialize the node properties, the dimensions and the k coefficient.
@@ -31,6 +33,7 @@ export default class Node implements NodeProperties {
         this.image = properties.image
         this.font = properties.font
         this.locked = properties.locked
+        this.payload = properties.payload
 
         this.dimensions = {
             width: 0,
@@ -90,50 +93,52 @@ export default class Node implements NodeProperties {
 }
 
 export interface UserNodeProperties {
-    name: string;
-    coordinates: Coordinates;
-    image: Image;
-    colors: Colors;
-    font: Font;
-    locked: boolean;
+    name: string
+    coordinates: Coordinates
+    image: Image
+    colors: Colors
+    font: Font
+    locked: boolean
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    payload?: any
 }
 
 export interface NodeProperties extends UserNodeProperties {
-    id: string;
-    parent: Node;
-    k?: number;
+    id: string
+    parent: Node
+    k?: number
 }
 
 export interface ExportNodeProperties extends UserNodeProperties {
-    id: string;
-    parent: string;
-    k: number;
+    id: string
+    parent: string
+    k: number
 }
 
 export interface Coordinates {
-    x: number;
-    y: number;
+    x: number
+    y: number
 }
 
 export interface Dimensions {
-    width: number;
-    height: number;
+    width: number
+    height: number
 }
 
 export interface Image {
-    src: string;
-    size: number;
+    src: string
+    size: number
 }
 
 export interface Colors {
-    name: string;
-    background: string;
+    name: string
+    background: string
     branch: string
 }
 
 export interface Font {
-    size: number;
-    style: string;
+    size: number
+    style: string
     weight: string
     decoration: string
 }

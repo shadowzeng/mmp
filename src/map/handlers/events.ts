@@ -8,7 +8,7 @@ import Log from '../../utils/log'
  */
 export default class Events {
 
-    private dispatcher: Dispatch<any>;
+    private dispatcher: Dispatch<any>
 
     /**
      * Initialize the events.
@@ -24,7 +24,7 @@ export default class Events {
      * @param {Event} event
      * @param parameters
      */
-    public call(event: Event, ...parameters) {
+    public call(event: Event, ...parameters): void {
         return this.dispatcher.call(event, ...parameters)
     }
 
@@ -33,7 +33,7 @@ export default class Events {
      * @param {string} event
      * @param {Function} callback
      */
-    public on = (event: string, callback: Function) => {
+    public on(event: string, callback: Function): void {
         if (typeof event !== 'string') {
             Log.error('The event must be a string', 'type')
         }
@@ -43,22 +43,23 @@ export default class Events {
         }
 
         this.dispatcher.on(Event[event], <any>callback)
-    };
+    }
 
 }
 
 export enum Event {
-    create = 'mmp-create',
-    center = 'mmp-center',
-    undo = 'mmp-undo',
-    redo = 'mmp-redo',
-    exportJSON = 'mmp-export-json',
-    exportImage = 'mmp-export-image',
-    zoomIn = 'mmp-zoom-in',
-    zoomOut = 'mmp-zoom-out',
-    nodeSelect = 'mmp-node-select',
-    nodeDeselect = 'mmp-node-deselect',
-    nodeUpdate = 'mmp-node-update',
-    nodeCreate = 'mmp-node-create',
-    nodeRemove = 'mmp-node-remove'
+    create = 'mindap-create',
+    center = 'mindap-center',
+    undo = 'mindap-undo',
+    redo = 'mindap-redo',
+    exportJSON = 'mindap-export-json',
+    exportImage = 'mindap-export-image',
+    zoomIn = 'mindap-zoom-in',
+    zoomOut = 'mindap-zoom-out',
+    nodeSelect = 'mindap-node-select',
+    nodeDeselect = 'mindap-node-deselect',
+    nodeUpdate = 'mindap-node-update',
+    nodeCreate = 'mindap-node-create',
+    nodeRemove = 'mindap-node-remove',
+    nodePayloadSelect = 'mindap-node-payload-select',
 }

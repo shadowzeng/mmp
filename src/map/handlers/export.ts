@@ -9,7 +9,7 @@ import {Event} from './events'
  */
 export default class Export {
 
-    private map: Map;
+    private map: Map
 
     /**
      * Get the associated map instance.
@@ -23,20 +23,20 @@ export default class Export {
      * Return the snapshot (json) of the current map.
      * @returns {MapSnapshot} json
      */
-    public asJSON = (): MapSnapshot => {
+    public asJSON(): MapSnapshot {
         const snapshot = this.map.history.current()
 
         this.map.events.call(Event.exportJSON)
 
         return  Utils.cloneObject(snapshot)
-    };
+    }
 
     /**
      * Return the image data URI in the callback function.
      * @param {Function} callback
      * @param {string} type
      */
-    public asImage = (callback: Function, type?: string) => {
+    public asImage(callback: Function, type?: string): void  {
         if (typeof callback !== 'function') {
             Log.error('The first parameter must be a function', 'type')
         }
@@ -75,13 +75,13 @@ export default class Export {
                 Log.error('The image has not been loaded correctly')
             }
         })
-    };
+    }
 
     /**
      * Convert the mind map svg in the data URI.
      * @param {Function} callback
      */
-    private dataURI(callback: Function) {
+    private dataURI(callback: Function): void {
         const element = this.map.dom.g.node(),
             clone = element.cloneNode(true),
             svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
@@ -136,7 +136,7 @@ export default class Export {
      * @param {HTMLElement} element
      * @param {Function} callback
      */
-    private convertImages(element: HTMLElement, callback: Function) {
+    private convertImages(element: HTMLElement, callback: Function): void {
         let images = element.querySelectorAll('image'),
             counter = images.length
 
@@ -158,7 +158,7 @@ export default class Export {
 
                     image.setAttribute('href', canvas.toDataURL('image/png'))
 
-                    counter--;
+                    counter--
 
                     if (counter === 0) {
                         callback()
