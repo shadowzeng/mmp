@@ -13,6 +13,7 @@
     "start": "rollup -c -w",
     "docs": "typedoc ./src --out ./docs --module umd",
     "build": "rollup -c --environment BUILD:production -p terser",
+    "release": "yarn run build",
     "webpack": "webpack serve --open"
   },
   "dependencies": {

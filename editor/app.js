@@ -1,0 +1,1 @@
+let map = mindap.create('mmp1', { rootNode: { name: 'Map' }, readonly: false })

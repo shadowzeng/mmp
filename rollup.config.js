@@ -11,7 +11,7 @@ let config = {
     output: {
         name: pkg.name,
         format: "umd",
-        file: "build/" + pkg.name + ".js",
+        file: "dist/" + pkg.name + ".min.js",
         globals: {
             d3: "d3"
         },
@@ -28,9 +28,6 @@ if (process.env.BUILD === "production") {
     config.output.banner = `/**
  * @module ${pkg.name}
  * @version ${pkg.version}
- * @file ${pkg.description}
- * @license ${pkg.license}
- * @see {@link ${pkg.homepage}|GitHub}
 */`;
 } else {
     config.plugins = config.plugins.concat([
